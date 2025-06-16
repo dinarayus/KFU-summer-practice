@@ -1,0 +1,132 @@
+Dinara💸, [16.06.2025 16:23]
+using System;
+
+public class OctalNumber
+{
+    private string octalValue;
+
+    // Конструктор по умолчанию
+    public OctalNumber()
+    {
+        octalValue = "0";
+    }
+
+    // Конструктор из строки (предполагается, что строка корректная)
+    public OctalNumber(string value)
+    {
+        if (!IsValidOctal(value))
+            throw new ArgumentException("Неверное восьмеричное число.");
+        octalValue = value;
+    }
+
+    // Свойство для получения/установки значения
+    public string Value
+    {
+        get => octalValue;
+        set
+        {
+            if (!IsValidOctal(value))
+                throw new ArgumentException("Неверное восьмеричное число.");
+            octalValue = value;
+        }
+    }
+
+    // Проверка корректности восьмеричного числа
+    private bool IsValidOctal(string value)
+    {
+        foreach (char c in value)
+        {
+            if (c < '0' || c > '7') return false;
+        }
+        return true;
+    }
+
+    // Преобразование в десятичное число
+    public int ToDecimal()
+    {
+        int result = 0;
+        foreach (char c in octalValue)
+        {
+            result = result * 8 + (c - '0');
+        }
+        return result;
+    }
+
+    // Форматированный вывод
+    public override string ToString()
+    {
+        return $"(Octal: {octalValue}, Decimal: {ToDecimal()})";
+    }
+
+    // Операции сравнения
+    public static bool operator ==(OctalNumber a, OctalNumber b)
+    {
+        return a.ToDecimal() == b.ToDecimal();
+    }
+
+    public static bool operator !=(OctalNumber a, OctalNumber b)
+    {
+        return !(a == b);
+    }
+
+    public static bool operator <(OctalNumber a, OctalNumber b)
+    {
+        return a.ToDecimal() < b.ToDecimal();
+    }
+
+    public static bool operator >(OctalNumber a, OctalNumber b)
+    {
+        return a.ToDecimal() > b.ToDecimal();
+    }
+
+    // Доступ к цифре по индексу
+    public char this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= octalValue.Length)
+                throw new IndexOutOfRangeException();
+            return octalValue[index];
+        }
+        set
+        {
+            if (index < 0  index >= octalValue.Length  value < '0' || value > '7')
+                throw new ArgumentException("Недопустимый символ или индекс.");
+            char[] chars = octalValue.ToCharArray();
+            chars[index] = value;
+            octalValue = new string(chars);
+        }
+    }
+
+    // Переопределение Equals и GetHashCode для корректной работы == и !=
+    public override bool Equals(object obj)
+    {
+        if (obj is OctalNumber other)
+            return this == other;
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return ToDecimal().GetHashCode();
+    }
+}
+
+Dinara💸, [16.06.2025 16:23]
+class Program
+{
+    static void Main()
+    {
+        OctalNumber num1 = new OctalNumber("17");
+        OctalNumber num2 = new OctalNumber("20");
+
+        Console.WriteLine(num1); // (Octal: 17, Decimal: 15)
+        Console.WriteLine(num2); // (Octal: 20, Decimal: 16)
+
+        Console.WriteLine(num1 < num2); // True
+        Console.WriteLine(num1[1]);     // '7'
+
+        num1[1] = '5';
+        Console.WriteLine(num1); // (Octal: 15, Decimal: 13)
+    }
+}
