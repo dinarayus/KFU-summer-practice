@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    // Правая часть уравнения y' = f(x, y)
+    // f(x,y) = -|x^2 + 1| * sqrt(1 - y^2)
+    static double Function(double x, double y)
+    {
+        double underSqrtY = 1 - y * y;
+        if (underSqrtY < 0)
+            throw new ArgumentException("Вычисление sqrt(1 - y^2): подкоренное отрицательно");
+        // |x^2 + 1| на практике равно x^2 + 1, т.к. x^2+1 >= 1
+        double absPart = Math.Abs(x * x + 1);
+        return -absPart * Math.Sqrt(underSqrtY);
+    }
+
+    // Модифицированный метод Эйлера (предиктор-корректор)
+    static List<(double x, double y)> ModifiedEuler(double x0, double y0, double xn, double h)
+    {
+        var result = new List<(double x, double y)>();
+        double x = x0, y = y0;
+        result.Add((x, y));
+
+        while (x < xn - 1e-10)  // чтобы избежать ошибок накопления
+        {
+            double k1 = Function(x, y);
+            double yPredict = y + h * k1;
+            double k2 = Function(x + h, yPredict);
+
+            y += h / 2 * (k1 + k2);
+            x += h;
+
+            result.Add((x, y));
+        }
+
+        return result;
+    }
+
+    static void Main()
+    {
+        double x0 = 0;
+        double y0 = 0.95;
+        double xn = Math.PI;
+        double h = 0.05;
+
+        List<(double x, double y)> table;
+        try
+        {
+            table = ModifiedEuler(x0, y0, xn, h);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine("Ошибка при вычислении: " + ex.Message);
+            return;
+        }
+
+        Console.WriteLine("    x\t     y (приближенное)");
+        Console.WriteLine("--------------------------------");
+        foreach (var (x, y) in table)
+        {
+            Console.WriteLine($"{x,8:F4}\t{y,10:F6}");
+        }
+    }
+}
