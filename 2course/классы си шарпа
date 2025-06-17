@@ -1,4 +1,3 @@
-Dinara💸, [16.06.2025 16:23]
 using System;
 
 public class OctalNumber
@@ -112,7 +111,6 @@ public class OctalNumber
     }
 }
 
-Dinara💸, [16.06.2025 16:23]
 class Program
 {
     static void Main()
